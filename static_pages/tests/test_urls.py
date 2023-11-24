@@ -3,6 +3,7 @@ from django.test import Client, TestCase
 
 class StaticURLTests(TestCase):
     def setUp(self):
+        # Создаем неавторизованый клиент
         self.guest_client = Client()
 
     def test_about_url_exists_at_desired_location(self):

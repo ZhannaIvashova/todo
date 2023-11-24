@@ -23,7 +23,9 @@ class TaskURLTests(TestCase):
         self.guest_client = Client()
         # Создаем авторизованый клиент
         self.user = User.objects.create_user(username='StasBasov')
+        # Создаем второй клиент
         self.authorized_client = Client()
+        # Авторизуем пользователя
         self.authorized_client.force_login(self.user)
 
     # Проверяем общедоступные страницы
@@ -66,6 +68,8 @@ class TaskURLTests(TestCase):
             response, ('/admin/login/?next=/task/test-slug/'))
 
     # Проверка вызываемых шаблонов для каждого адреса
+    # Когда тесты запускаются, они используют URL-адреса из словаря templates_url_names,
+    # чтобы отправить запросы на соответствующие URL-адреса в приложении urls.py
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_url_names = {
@@ -76,5 +80,6 @@ class TaskURLTests(TestCase):
         }
         for template, url in templates_url_names.items():
             with self.subTest(url=url):
+                # этот метод отправляет GET-запрос на URL-адрес в файле urls.py, который указан в переменной url
                 response = self.authorized_client.get(url)
                 self.assertTemplateUsed(response, template)

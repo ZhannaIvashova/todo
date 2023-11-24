@@ -44,7 +44,8 @@ class TaskPagesTests(TestCase):
             with self.subTest(template=template):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
-
+                
+    # Проверка словаря контекста главной страницы (в нём передаётся форма)
     def test_home_page_show_correct_context(self):
         """Шаблон home сформирован с правильным контекстом."""
         response = self.guest_client.get(reverse('deals:home'))
@@ -106,3 +107,27 @@ class TaskPagesTests(TestCase):
         response = self.guest_client.get(reverse('deals:home'))
         title_inital = response.context['form'].fields['title'].initial
         self.assertEqual(title_inital, 'Значение по-умолчанию')
+
+'''
+# Проверяем используемые шаблоны (можно записать без цикла)
+def test_about_page_uses_correct_template(self):
+        """URL-адрес использует шаблон deals/added.html."""
+        response = self.authorized_client.get(reverse('deals:task_added'))
+        self.assertTemplateUsed(response, 'deals/added.html')
+
+    def test_home_page_correct_template(self):
+        """URL-адрес использует шаблон deals/home.html."""
+        response = self.authorized_client.get(reverse('deals:home'))
+        self.assertTemplateUsed(response, 'deals/home.html')
+
+    def test_task_list_page_authorized_uses_correct_template(self):
+        """URL-адрес использует шаблон deals/task_list.html."""
+        response = self.authorized_client.get(reverse('deals:task_list'))
+        self.assertTemplateUsed(response, 'deals/task_list.html')
+
+    def test_task_detail_pages_authorized_uses_correct_template(self):
+        """URL-адреса используют шаблон deals/task_detail.html."""
+        response = self.authorized_client.\
+            get(reverse('deals:task_detail', kwargs={'slug': 'test-slug'}))
+        self.assertTemplateUsed(response, 'deals/task_detail.html') 
+'''        

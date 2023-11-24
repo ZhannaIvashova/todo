@@ -31,7 +31,7 @@ class TaskModelTest(TestCase):
         }
         for value, expected in field_verboses.items():
             with self.subTest(value=value):
-                self.assertEqual(
+                self.assertEqual(   # task._meta.get_field(value) вытягивает объект поля (Field) из модели, соответствующий переданному имени поля value
                     task._meta.get_field(value).verbose_name, expected)
 
     def test_help_text(self):
@@ -69,3 +69,42 @@ class TaskModelTest(TestCase):
         task = TaskModelTest.task
         expected_object_name = task.title
         self.assertEqual(expected_object_name, str(task))
+
+
+'''
+# можно этот код сделать так:
+
+class TaskModelTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Создаём тестовую запись в БД
+        # и сохраняем созданную запись в качестве переменной класса
+        cls.task = Task.objects.create(
+            title='Заголовок тестовой задачи',
+            text='Тестовый текст',
+            slug='test-task'
+        )
+
+    def test_title_label(self):
+        """verbose_name поля title совпадает с ожидаемым."""
+        task = TaskModelTest.task
+        # Получаем из свойства класса Task значение verbose_name для title
+        verbose = task._meta.get_field('title').verbose_name
+        self.assertEqual(verbose, 'Заголовок')
+
+    def test_title_help_text(self):
+        """help_text поля title совпадает с ожидаемым."""
+        task = TaskModelTest.task
+        # Получаем из свойства класса Task значение help_text для title
+        help_text = task._meta.get_field('title').help_text
+        self.assertEqual(help_text, 'Дайте короткое название задаче')
+
+    # Аналогичным образом можно протестировать мета-значения из полей text, slug, image  
+
+    def test_object_name_is_title_fild(self):
+        """__str__  task - это строчка с содержимым task.title."""
+        task = TaskModelTest.task  # Обратите внимание на синтаксис
+        expected_object_name = task.title
+        self.assertEqual(expected_object_name, str(task)) 
+'''                
